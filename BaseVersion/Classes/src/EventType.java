@@ -3,10 +3,33 @@
  * @author Zielony
  * @verion 1.0
  */
-public abstract class EventType implements JSONSerializable {
+public class EventType implements JSONSerializable {
+	
+	protected String type;
+	
+	protected static final EventType ROADWORKS = new EventType("Roadworks");
+	
+	protected static final EventType ALTERATION = new EventType("Alteration");
+	
+	protected static final EventType PUBLIC_EVENT = new EventType("Public Event");
+	
+	private EventType() {
+		;
+	}
+	
+	private EventType(String type) {
+		this.type = type;
+	}
+	
 	/**
 	 * Returns: The type of event that occurred.
 	 * @return the type of event that occurred.
 	 */
-	public abstract String getType();
+	public String getType() {
+		return type;
+	}
+	
+	public String toString() {
+		return type;
+	}
 }

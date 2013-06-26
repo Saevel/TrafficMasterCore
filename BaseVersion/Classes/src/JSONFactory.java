@@ -44,7 +44,11 @@ public class JSONFactory {
 			
 			/*Trying to put the value in the JSON using the getter invocation*/
 			try {
-				json.put(fields[i].getName(), getter.invoke(bean));
+				Object value = getter.invoke(bean);
+				if(value == null) {
+					value = "null";
+				}
+				json.put(fields[i].getName(), value);
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | JSONException e) {
 				throw new NotSerializableException("JSONFactory|serialize|"+beanClass + "|cannot invoke getter");
@@ -84,7 +88,8 @@ public class JSONFactory {
 			}
 			
 			try {/*Invoking the setter- setting the field to the JSON-given value*/
-				setter.invoke(beanStub, jsonObject.get(fields[i].getName()));
+				Object deserializedObject = (Object)jsonObject.get(fields[i].getName());
+				setter.invoke(beanStub, deserializedObject);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | JSONException e) {
 				System.out.println(e.getMessage());
 				throw new NotSerializableException("JSONFactory|deserialize|" + beanClass +

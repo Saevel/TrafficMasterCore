@@ -26,21 +26,18 @@ public class EventGravity implements Comparable<EventGravity>, JSONSerializable 
 	 * @param gravity the gravity given.
 	 */
 	EventGravity(int gravity) {
-		this.setGravity(gravity);
+		this.gravity = gravity;
 	}
-	/**
+	 /**
 	 * Gets: the event gravity.
 	 * @return the event gravity.
 	 */
 	public int getGravity() {
 		return gravity;
 	}
-	/**
-	 * Sets: the event gravity.
-	 * @param gravity the event gravity
-	 */
-	public void setGravity(int gravity) {
-		this.gravity = gravity;
+	
+	public String toString() {
+		return Integer.toString(gravity);
 	}
 	
 	@Override

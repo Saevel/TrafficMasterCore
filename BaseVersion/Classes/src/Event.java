@@ -9,27 +9,27 @@ public class Event implements JSONSerializable {
 	/**
 	 * The name of the event.
 	 */
-	private String name;
+	private String name = null;
 	/**
 	 * A short description of the event.
 	 */
-	private String shortDescription;
+	private String shortDescription = null;
 	/**
 	 * A long description of the event.
 	 */
-	private String longDescription;
+	private String longDescription = null;
 	/**
 	 * The type of the event.
 	 */
-	private EventType type;
+	private EventType type = null;
 	/**
 	 * The gravity of the event.
 	 */
-	private EventGravity gravity;
+	private EventGravity gravity = null;
 	/**
 	 * The locations affected by the event.
 	 */
-	private Collection<Location> affected;
+	private Collection<Location> affected = null;
 	/**
 	 * Adds another location to the list of the affected.
 	 * @param affectedLocation the new affected location.
