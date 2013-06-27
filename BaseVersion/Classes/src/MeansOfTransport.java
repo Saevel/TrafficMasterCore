@@ -5,6 +5,8 @@ import org.json.JSONObject;
  * Defines a parent type for all the means of transport present in the traffic system.
  * @author Zielony
  * @version 1.0
+ * @see JSONSerializable
+ * @see JSONFactory
  */
 public class MeansOfTransport implements JSONSerializable {
 	/**

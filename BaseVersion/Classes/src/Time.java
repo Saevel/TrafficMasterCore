@@ -4,6 +4,7 @@ import java.util.Date;
  * Represents time or time interval , with comparison , sorting and difference determination possibilities.
  * @author Zielony
  * @version 1.0
+ * @see Date
  */
 public final class Time {
 	/**

@@ -5,6 +5,10 @@ import java.util.List;
  * Represents a line in the traffic system.
  * @author Zielony
  * @version 1.0
+ * @see MeansOfTransport
+ * @see Location
+ * @see JSONSerializable
+ * @see JSONFactory
  */
 public class Line implements JSONSerializable {
 	/**
@@ -20,21 +24,21 @@ public class Line implements JSONSerializable {
 	 */
 	private MeansOfTransport meansOfTransport;
 	/**
-	 * The stops passed by the line. Optional.
+	 * The list of locations on the line. Optional.
 	 */
-	private List<Stop> stopsPassed;
+	private List<Location> locationsPassed;
 	/**
 	 * No-argument constructor for serialization/deserialization
 	 */
 	Line() {
-		setStopsPassed(new LinkedList<Stop>());
+		setLocationsPassed(new LinkedList<Location>());
 	}
 	/**
 	 * Parametrized constructor for dependency injection
-	 * @param stopsPassed the stops passed by the line.
+	 * @param locationsPassed the locationss passed by the line.
 	 */
-	Line(List<Stop> stopsPassed ) {
-		this.setStopsPassed(stopsPassed);
+	Line(List<Location> locationsPassed ) {
+		this.setLocationsPassed(locationsPassed);
 	}
 	/**
 	 * Gets: the line name.
@@ -79,37 +83,37 @@ public class Line implements JSONSerializable {
 		this.direction = direction;
 	}
 	/**
-	 * Gets: all the stops passed by the line.
-	 * @return all the stops passed by the line.
+	 * Gets: all the locationss passed by the line.
+	 * @return all the locationss passed by the line.
 	 */
-	public List<Stop> getStopsPassed() {
-		return stopsPassed;
+	public List<Location> getLocationsPassed() {
+		return locationsPassed;
 	}
 	/**
-	 * Sets: all the stops passed by the line.
-	 * @param stopsPassed all the stops passed by the line.
+	 * Sets: all the locationss passed by the line.
+	 * @param locationsPassed all the locationss passed by the line.
 	 */
-	public void setStopsPassed(List<Stop> stopsPassed) {
-		this.stopsPassed = stopsPassed;
+	public void setLocationsPassed(List<Location> locationssPassed) {
+		this.locationsPassed = locationsPassed;
 	}
 	/**
-	 * Gives the information if the <code>stopsPassed</code> are define or contain anything.
+	 * Gives the information if the <code>locationsPassed</code> are defined or contain anything.
 	 * @return <code>true</code> if any information is present, <code>false</code> if not.
 	 */
-	public boolean hasStopsPassed() {
-		if(stopsPassed == null) {
+	public boolean hasLocationsPassed() {
+		if(locationsPassed == null) {
 			return false;
 		}
 		else {
-			return stopsPassed.isEmpty();
+			return locationsPassed.isEmpty();
 		}
 	}
 	/**
-	 * Removes all information about the passed <code>Stops</code>
+	 * Removes all information about the passed <code>Locations</code>
 	 */
-	public void removeStopsPassed() {
-		if(stopsPassed != null) {
-			stopsPassed.clear();
+	public void removeLocationsPassed() {
+		if(locationsPassed != null) {
+			locationsPassed.clear();
 		}
 	}
 }

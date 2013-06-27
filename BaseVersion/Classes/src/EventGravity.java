@@ -3,6 +3,9 @@
  * @author Zielony
  * @version 1.0
  * @see Event
+ * @see Comparable
+ * @see JSONSerializable
+ * @see JSONFactory
  */
 public class EventGravity implements Comparable<EventGravity>, JSONSerializable {
 	/**

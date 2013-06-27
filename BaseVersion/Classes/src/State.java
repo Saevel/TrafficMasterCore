@@ -2,6 +2,11 @@
  * Represents the state of a particular <code>Course</code> may be at a given <code>Time</code>.
  * @author Zielony
  * @version 1.0
+ * @see Time
+ * @see Location
+ * @see JSONSerializable
+ * @see JSONFactory
+ * @see Status
  */
 public class State implements JSONSerializable {
 	/**

@@ -5,6 +5,8 @@
  * 
  * @author Zielony
  * @version 1.0
+ * @see JSONSerializable
+ * @see JSONFactory
  */
 public class Status implements JSONSerializable {
 	/**

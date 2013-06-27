@@ -4,6 +4,11 @@ import java.util.Collection;
  * 
  * @author Zielony
  * @version 1.0
+ * @see EventType
+ * @see EvenGravity
+ * @see Location
+ * @see JSONSerializable
+ * @see JSONFactory
  */
 public class Event implements JSONSerializable {
 	/**
@@ -112,8 +117,6 @@ public class Event implements JSONSerializable {
 	/**
 	 * Gets: the event gravity.
 	 * @return the event gravity.
-	 * @throws CloneNotSupportedException 
-	 * @throws ClassCastException 
 	 */
 	public EventGravity getGravity() {
 		return gravity;
@@ -121,8 +124,6 @@ public class Event implements JSONSerializable {
 	/**
 	 * Sets: the event gravity.
 	 * @param gravity the event gravity.
-	 * @throws CloneNotSupportedException 
-	 * @throws ClassCastException 
 	 */
 	public void setGravity(EventGravity gravity) {
 		this.gravity = gravity;

@@ -4,8 +4,14 @@ import java.util.List;
  * Defines a route as a list of <code>SubRoutes</code> with certain capabilities
  * @author Zielony
  * @version 1.0
+ * @see SubRoute
+ * @see JSONSerializable
+ * @see JSONFactory
+ * @see Course
+ * @see Time
+ * 
  */
-public interface IRoute extends List<SubRoute>, JSONSerializable {
+public interface IRoute extends JSONSerializable {
 	/**
 	 * Fetches a list of all the <code>Courses</code> taken on the Route.
 	 * @return  a list of all the <code>Courses</code> taken on the Route.
@@ -41,4 +47,21 @@ public interface IRoute extends List<SubRoute>, JSONSerializable {
 	 * @return the overall travel time estimated on the basis of traffic data analysis.
 	 */
 	public Time getEstimatedTravelTime();
+	/**
+	 * Adds a new subRoute to the route
+	 * @param subRoute the new SubRoute
+	 */
+	public void addSubRoute(SubRoute subRoute);
+	/**
+	 * Removes the subRoute from the route
+	 * @param subRoute the subRoute to remove
+	 * @return if there was success
+	 */
+	public boolean removeSubRoute(SubRoute subRoute);
+	/**
+	 * Checks if the Route contains this SubRoute
+	 * @param subRoute the SubRoute checked.
+	 * @return TODO
+	 */
+	public boolean containsSubRoute(SubRoute subRoute);
 }

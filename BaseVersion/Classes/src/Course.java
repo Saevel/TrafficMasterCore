@@ -3,6 +3,9 @@
  * @author Zielony
  * @version 1.0
  * @see Line
+ * @see State
+ * @see JSONSerializable
+ * @see JSONFactory
  */
 public class Course implements JSONSerializable {
 	/**
@@ -67,7 +70,7 @@ public class Course implements JSONSerializable {
 	 * Gets: Whether the course is currently active.
 	 * @return <code>true</code> if the course is active and <code>false</code> if conversely.
 	 */
-	public boolean isActive() {
+	public boolean getActive() {
 		return active;
 	}
 	/**

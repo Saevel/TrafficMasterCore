@@ -2,6 +2,9 @@
  * Defines a certain type of <code>Event</code> that may appear in the system.
  * @author Zielony
  * @verion 1.0
+ * @see Event
+ * @see JSONSerializable
+ * @see JSONFactory
  */
 public class EventType implements JSONSerializable {
 	/**

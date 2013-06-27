@@ -2,13 +2,22 @@ import java.io.NotSerializableException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 /**
  * A factory/util class for generic bean-to-JSON serialization.
  * @author Zielony
  * @version 1.0
+ * @see JSONObject
+ * @see Class
+ * @see Field
+ * @see Method
+ * @see JSONSerializable
  */
 public class JSONFactory {
 	
@@ -26,7 +35,7 @@ public class JSONFactory {
 	
 		Class beanClass = bean.getClass();/*Getting the bean class*/
 		Field[] fields = beanClass.getDeclaredFields(); /*Getting the bean fields*/
-		
+		System.out.println(fields.length);
 		JSONObject json = new JSONObject(); /*Creating a JSONObject*/
 		/*Iterating over all the fields*/
 		

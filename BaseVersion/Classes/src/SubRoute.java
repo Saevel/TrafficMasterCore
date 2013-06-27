@@ -1,15 +1,23 @@
 import java.util.Date;
 import java.util.List;
-
-public class SubRoute {
+/**
+ * Represents a part of a <code>Route</code> traversed only using one <code>Course</code>
+ * @author Zielony
+ * @version 1.0
+ * @see Course
+ * @see Stop
+ * @see Time
+ * 
+ */
+public class SubRoute implements JSONSerializable {
 	/**
 	 * The course which the sub route follows
 	 */
 	private Course course;
 	/**
-	 * Stops passed on the way.
+	 * Locations passed on the way.
 	 */
-	private List<Stop> stops;
+	private List<Location> locations;
 	/**
 	 * The start time according to the schedule.
 	 */
@@ -97,17 +105,17 @@ public class SubRoute {
 		this.estimatedEndTime = estimatedEndTime;
 	}
 	/**
-	 * Gets: the traversed stops.
-	 * @return the traversed stops.
+	 * Gets: the traversed locations.
+	 * @return the traversed locations.
 	 */
-	public List<Stop> getStops() {
-		return stops;
+	public List<Location> getLocations() {
+		return locations;
 	}
 	/**
-	 * Sets: the traversed stops.
-	 * @param stops the traversed stops.
+	 * Sets: the traversed locations.
+	 * @param locations the traversed locations.
 	 */
-	public void setStops(List<Stop> stops) {
-		this.stops = stops;
+	public void setLocations(List<Location> locations) {
+		this.locations = locations;
 	}
 }

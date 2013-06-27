@@ -32,4 +32,12 @@ public interface ISchedule{
 	 * </code>otherwise.  
 	 */
 	boolean passesThrough(Location location, Line line);
+	/**
+	 * 
+	 * @param stop
+	 * @param line
+	 * @return
+	 */
+	List<Time> getArrivals(Stop stop, Line line);
+	
 }

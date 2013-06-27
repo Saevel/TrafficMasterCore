@@ -3,7 +3,7 @@
  * To be implemented by all the classes exchanged between application packages.
  * @author Zielony
  * @version 1.0
- *
+ * @see JSONFactory
  */
 public interface JSONSerializable {
 	;

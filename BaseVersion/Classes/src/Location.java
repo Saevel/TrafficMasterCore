@@ -4,6 +4,8 @@
  *
  * @author Zielony
  * @version 1.0
+ * @see JSONSerializable
+ * @see JSONFactory
  */
 public class Location implements JSONSerializable {
 	/**

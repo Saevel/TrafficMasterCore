@@ -3,6 +3,9 @@
  * 
  * @author Zielony
  * @version 1.0
+ * @see Location
+ * @see JSONSerializable
+ * @see JSONFactory
  */
 public class Stop extends Location implements JSONSerializable {
 	/**
