@@ -18,17 +18,27 @@ public class Location implements JSONSerializable {
 	 * The name of the location.
 	 */
 	protected String name;
-	
-	
-	//TODO : implement the Heaversine Formula
+	/**
+	 * Earth's radius expressed in meters.
+	 */
+	private static final float EARTH_RADIUS = 6371000;
 	
 	/**
-	 * Calculates the distance between the current location and another one specified.
+	 * Calculates the distance between the current location and another one specified(in meters).
 	 * @param otherLocation another location, to which the distance is calculated.
-	 * @return the distance between the two locations.
+	 * @return the distance between the two locations(in meters).
 	 */
 	public float getDistanceTo(Location otherLocation) {
-		return 0;
+		/*Separating and simply calculating the factors in the equation*/
+		double firstFactor = Math.sin((latitude-otherLocation.latitude)/2);
+		firstFactor *= firstFactor;
+		
+		double secondFactor = Math.cos(latitude)*Math.cos(otherLocation.latitude);
+		
+		double thirdFactor = Math.sin((longitude-otherLocation.longitude)/2);
+		thirdFactor *= thirdFactor;
+		/*Obtaining the final result*/
+		return (float)(2*EARTH_RADIUS*Math.asin(Math.sqrt(firstFactor)+secondFactor*thirdFactor));
 	}
 	/**
 	 * Gets: the location's latitude.

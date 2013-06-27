@@ -20,7 +20,7 @@ public class JSONFactory {
 	 * Serializes the bean into the <code>JSONObject</code> form.
 	 * @param bean the bean object to serialized
 	 * @return the <code>JSONObject</code> for of the bean object
-	 * @throws NotSerializableException 
+	 * @throws NotSerializableException if the bean is corrupted or not able to be serialized.
 	 */
 	public static JSONObject serialize(final JSONSerializable bean) throws NotSerializableException {
 	
@@ -44,11 +44,13 @@ public class JSONFactory {
 			
 			/*Trying to put the value in the JSON using the getter invocation*/
 			try {
+				
 				Object value = getter.invoke(bean);
-				if(value == null) {
+				if(value == null) { /*Fixing JSONs unreasonable rection to nulls*/
 					value = "null";
 				}
-				json.put(fields[i].getName(), value);
+				
+				json.put(fields[i].getName(), value); /*Iterative field serialization to JSON*/
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | JSONException e) {
 				throw new NotSerializableException("JSONFactory|serialize|"+beanClass + "|cannot invoke getter");
@@ -59,8 +61,8 @@ public class JSONFactory {
 	/**
 	 * Deserializes the bean object from the <code>JSONObject</code>
 	 * @param jsonObject
-	 * @return
-	 * @throws NotSerializableException 
+	 * @return the <code>Object</code> representing the deserialized bean.
+	 * @throws NotSerializableException if the bean is corrupted or not able to be deserialized.
 	 */
 	public static Object deserialize(JSONObject jsonObject, Class beanClass) throws NotSerializableException {
 		
@@ -76,7 +78,7 @@ public class JSONFactory {
 		
 		/*Iterating over Field objects*/
 		for(int i=fields.length-1; i>=0; i--) {
-			System.out.println(fields[i].getName());
+			
 			String setterName = JSONFactory.getSetterName(fields[i]); /*Checking the field setter name*/
 			Method setter = null;
 			
@@ -88,16 +90,21 @@ public class JSONFactory {
 			}
 			
 			try {/*Invoking the setter- setting the field to the JSON-given value*/
-				Object deserializedObject = (Object)jsonObject.get(fields[i].getName());
+				Object deserializedObject = jsonObject.get(fields[i].getName());
+				
+				/*Fixing JSONs abnormal behavior in face of nulls*/
+				if(deserializedObject instanceof String && deserializedObject.equals("null")) {
+					deserializedObject = null;
+				}
+				
+				/*Final , iterative deserialization using setter invocation*/
 				setter.invoke(beanStub, deserializedObject);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | JSONException e) {
 				System.out.println(e.getMessage());
 				throw new NotSerializableException("JSONFactory|deserialize|" + beanClass +
 							"|cannot invoke the setter!");
-					
 			}
 		}
-		
 		return beanStub;
 	}
 	/**

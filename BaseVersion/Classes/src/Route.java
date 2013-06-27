@@ -13,7 +13,7 @@ public class Route extends LinkedList<SubRoute> implements IRoute, JSONSerializa
 	 * @return start time according to the schedule.
 	 * @throws NullPointerException if the list of <code>SubRoutes</code> is empty.
 	 */
-	public Date getScheduleStartTime() throws NullPointerException {
+	public Time getScheduleStartTime() throws NullPointerException {
 		return get(0).getScheduleStartTime();
 	}
 	
@@ -22,33 +22,40 @@ public class Route extends LinkedList<SubRoute> implements IRoute, JSONSerializa
 	 * @return end time according to the schedule.
 	 * @throw NullPointerException if the list of <code>SubRoutes</code> is empty.
 	 */
-	public Date getScheduleEndTime() throws NullPointerException {	
+	public Time getScheduleEndTime() throws NullPointerException {	
 		return this.get(size()-1).getScheduleEndTime();
 	}
-	public Date getEstimatedStartTime() throws NullPointerException {
+	/**
+	 * Returns the start time estimated on the basis of the analysis of real traffic data.
+	 * @return the start time estimated on the basis of the analysis of real traffic data.
+	 * @throws NullPointerException if there is no data on this type of parameter.
+	 */
+	public Time getEstimatedStartTime() throws NullPointerException {
 		return get(0).getEstimatedStartTime();
 	}
-	
-	public Date getEstimatedEndTime() throws NullPointerException {
+	/**
+	 * Returns the end time estimated on the basis of the analysis of real traffic data.
+	 * @return the end time estimated on the basis of the analysis of real traffic data.
+	 * @throws NullPointerException if there is no data on this type of parameter.
+	 */
+	public Time getEstimatedEndTime() throws NullPointerException {
 		return get(size()-1).getEstimatedEndTime();
 	}
-	
-	public Date getScheduleTravelTime() throws NullPointerException, IllegalStateException {
-		Date startTime = getScheduleStartTime();
-		Date endTime = getScheduleEndTime();
-		if(endTime.after(startTime)) {
-			throw new IllegalStateException("Route|getScheduleTravelTime|startTime later than endTime");
-		}
-		return DateUtils.getTimeDifference(endTime, startTime);
+	/**
+	 * Returns the travel time according to schedule data.
+	 * @return the travel time according to schedule data.
+	 * @throws NullPointerException if there is no data on this type of parameter.
+	 */
+	public Time getScheduleTravelTime() throws NullPointerException, IllegalStateException {
+		return this.getScheduleEndTime().getTimeDifference(getScheduleStartTime());
 	}
-	
-	public Date getEstimatedTravelTime() throws NullPointerException, IllegalStateException {
-		Date startTime = getEstimatedStartTime();
-		Date endTime = getEstimatedEndTime();
-		if(endTime.after(startTime)) {
-			throw new IllegalStateException("Route|getEstimatedTravelTime|startTime later than endTime");
-		}
-		return DateUtils.getTimeDifference(endTime, startTime);
+	/**
+	 * Returns the travel time estimated on the basis of the analysis of real traffic data.
+	 * @return the travel time estimated on the basis of the analysis of real traffic data.
+	 * @throws NullPointerException if there is no data on this type of parameter.
+	 */
+	public Time getEstimatedTravelTime() throws NullPointerException, IllegalStateException {
+		return this.getEstimatedEndTime().getTimeDifference(getEstimatedStartTime());
 	}
 
 	@Override

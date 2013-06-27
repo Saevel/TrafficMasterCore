@@ -11,30 +11,30 @@ public class MainClass {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
-		Event event = new Event();
-		event.setGravity(EventGravity.HIGH);
-		event.setType(EventType.ROADWORKS);
-		event.setAffected(new LinkedList<Location>());
 		
 		JSONObject json = null;
 		
+		State oldState = new State();
+		oldState.setAcceleration((float) 9.81);
+		oldState.setAverageVelocity(10);
+		oldState.setCurrentVelocity(3);
+		oldState.setDelay(new Time(1,12,0));
+		oldState.setStatus(Status.JAMMED);
+		
 		try {
-			json = JSONFactory.serialize(event);
-			System.out.println(json);
-		} catch (NotSerializableException e) {
-			System.err.println(e.getMessage());
+			json = JSONFactory.serialize(oldState);
+			System.out.println("JSON: " + json);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
 		}
 		
 		try {
-			Event newEvent = (Event)JSONFactory.deserialize(json, Event.class);
-			System.out.println(event.getGravity());
-		} catch (NotSerializableException e) {
-			System.err.println(e.getMessage());
+			State newState =(State)JSONFactory.deserialize(json, State.class);
+			System.out.println(newState.getStatus());
+		} catch(Exception e){
+			System.out.println(e.getMessage());
 		}
 		
-		
-		
+	
 	}
-
 }

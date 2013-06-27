@@ -92,4 +92,24 @@ public class Line implements JSONSerializable {
 	public void setStopsPassed(List<Stop> stopsPassed) {
 		this.stopsPassed = stopsPassed;
 	}
+	/**
+	 * Gives the information if the <code>stopsPassed</code> are define or contain anything.
+	 * @return <code>true</code> if any information is present, <code>false</code> if not.
+	 */
+	public boolean hasStopsPassed() {
+		if(stopsPassed == null) {
+			return false;
+		}
+		else {
+			return stopsPassed.isEmpty();
+		}
+	}
+	/**
+	 * Removes all information about the passed <code>Stops</code>
+	 */
+	public void removeStopsPassed() {
+		if(stopsPassed != null) {
+			stopsPassed.clear();
+		}
+	}
 }

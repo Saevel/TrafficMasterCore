@@ -15,30 +15,30 @@ public interface IRoute extends List<SubRoute>, JSONSerializable {
 	 * Gets: the start time according to the schedule.
 	 * @return the start time according to the schedule.
 	 */
-	public Date getScheduleStartTime();
+	public Time getScheduleStartTime();
 	/**
 	 * Gets: the end time according to the schedule.
 	 * @return the end time according to the schedule.
 	 */
-	public Date getScheduleEndTime();
+	public Time getScheduleEndTime();
 	/**
 	 * Gets: the estimated startTime basing on traffic data analysis.
 	 * @return the estimated startTime basing on traffic data analysis.
 	 */
-	public Date getEstimatedStartTime();
+	public Time getEstimatedStartTime();
 	/**
 	 * Gets: the estimated end Time basing on traffic data analysis.
 	 * @return the estimated end Time basing on traffic data analysis.
 	 */
-	public Date getEstimatedEndTime();
+	public Time getEstimatedEndTime();
 	/**
 	 * Gets: the overall travel time according to the schedule.
 	 * @return the overall travel time according to the schedule.
 	 */
-	public Date getScheduleTravelTime();
+	public Time getScheduleTravelTime();
 	/**
 	 * Gets: the overall travel time estimated on the basis of traffic data analysis.
 	 * @return the overall travel time estimated on the basis of traffic data analysis.
 	 */
-	public Date getEstimatedTravelTime();
+	public Time getEstimatedTravelTime();
 }

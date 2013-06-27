@@ -8,25 +8,39 @@ public class EventGravity implements Comparable<EventGravity>, JSONSerializable 
 	/**
 	 * High gravity.
 	 */
-	public static final EventGravity HIGH = new EventGravity(100);
+	public static final EventGravity HIGH = new EventGravity(100, "High");
 	/**
 	 * Medium gravity.
 	 */
-	public static final EventGravity MEDIUM = new EventGravity(50);
+	public static final EventGravity MEDIUM = new EventGravity(50, "Medium");
 	/**
 	 * Low gravity.
 	 */
-	public static final EventGravity LOW = new EventGravity(0);
+	public static final EventGravity LOW = new EventGravity(0, "Low");
 	/**
-	 * 
+	 * The gravity of the <code>Event</code> expressed as an <code>int</code>.
 	 */
 	protected int gravity;
-	/**
-	 * Constructs an object representing a given gravity.
-	 * @param gravity the gravity given.
+	
+	/***
+	 * The name attributed to a certain type of gravity.
 	 */
-	EventGravity(int gravity) {
+	protected String name;
+	/**
+	 * Creates an empty object for serialization's sake.
+	 */
+	protected EventGravity(){
+		;
+	}
+	
+	/**
+	 * Builds a certain <code>EventGravity</code> object, assigning the gravity marker and a name.
+	 * @param gravity The gravity of the <code>Event</code> expressed as an <code>int</code>.
+	 * @param name The name attributed to a certain type of gravity.
+	 */
+	protected EventGravity(int gravity, String name) {
 		this.gravity = gravity;
+		this.name = name;
 	}
 	 /**
 	 * Gets: the event gravity.
@@ -35,9 +49,12 @@ public class EventGravity implements Comparable<EventGravity>, JSONSerializable 
 	public int getGravity() {
 		return gravity;
 	}
-	
-	public String toString() {
-		return Integer.toString(gravity);
+	/**
+	 * Gets: the event gravity name.
+	 * @return the event gravity name.
+	 */
+	public String getName() {
+		return name;
 	}
 	
 	@Override
@@ -61,4 +78,3 @@ public class EventGravity implements Comparable<EventGravity>, JSONSerializable 
 		}		
 	}
 }
-
