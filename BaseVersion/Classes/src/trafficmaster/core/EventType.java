@@ -7,7 +7,11 @@ package trafficmaster.core;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class EventType implements JSONSerializable {
+public class EventType implements JSONSerializable, TrafficMasterBean {
+	/**
+	 * The unique object identifier within the class
+	 */
+	private int ID = NULL_ID;
 	/**
 	 * The name of the type of an <code>Event</code>
 	 */
@@ -54,5 +58,13 @@ public class EventType implements JSONSerializable {
 	 */
 	public String toString() {
 		return type;
+	}
+	@Override
+	public int getID() {
+		return ID;
+	}
+	@Override
+	public void setID(int ID) {
+		this.ID = ID;
 	}
 }

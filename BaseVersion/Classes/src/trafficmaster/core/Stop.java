@@ -8,7 +8,7 @@ package trafficmaster.core;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class Stop extends Location implements JSONSerializable {
+public class Stop extends Location {
 	/**
 	 * The stop's name.
 	 */

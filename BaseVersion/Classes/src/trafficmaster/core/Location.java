@@ -8,7 +8,11 @@ package trafficmaster.core;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class Location implements JSONSerializable {
+public class Location implements JSONSerializable, TrafficMasterBean {
+	/**
+	 * The unique object identifier within the class
+	 */
+	private int ID = NULL_ID;
 	/**
 	 * The latitude of the location.
 	 */
@@ -84,5 +88,14 @@ public class Location implements JSONSerializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	@Override
+	public int getID() {
+		return ID;
+	}
+	@Override
+	public void setID(int ID) {
+		this.ID = ID;
+		
 	}
 }

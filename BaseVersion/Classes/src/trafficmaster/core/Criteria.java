@@ -10,8 +10,10 @@ import java.util.List;
  * @see Criterion
  * @see ICriteria
  */
-public class Criteria implements ICriteria{
-	
+public class Criteria implements ICriteria {
+	/**
+	 * All the criteria used in the gauging process.
+	 */
 	List<Criterion> criteria;
 	
 	@Override

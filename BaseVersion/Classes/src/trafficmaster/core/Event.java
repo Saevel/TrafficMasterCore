@@ -11,7 +11,13 @@ import java.util.Collection;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class Event implements JSONSerializable {
+public class Event implements JSONSerializable, TrafficMasterBean {
+	
+	/**
+	 * The unique object identifier within the class
+	 */
+	private int ID = NULL_ID;
+	
 	/**
 	 * The name of the event.
 	 */
@@ -142,5 +148,13 @@ public class Event implements JSONSerializable {
 	 */
 	public void setAffected(Collection<Location> affected) {
 		this.affected = affected;
+	}
+	@Override
+	public int getID() {
+		return ID;
+	}
+	@Override
+	public void setID(int ID) {
+		this.ID = ID;
 	}
 }

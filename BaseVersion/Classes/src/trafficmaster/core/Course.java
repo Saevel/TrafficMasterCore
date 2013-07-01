@@ -8,7 +8,11 @@ package trafficmaster.core;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class Course implements JSONSerializable {
+public class Course implements JSONSerializable, TrafficMasterBean {
+	/**
+	 * The unique object identifier within the class
+	 */
+	private int ID = NULL_ID;
 	/**
 	 * The <code>Line</code> this <code>Course</code> is tied to
 	 * */
@@ -80,5 +84,14 @@ public class Course implements JSONSerializable {
 	 */
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+	@Override
+	public int getID() {
+		return ID;
+	}
+	@Override
+	public void setID(int ID) {
+		this.ID = ID;
+		
 	}
 }

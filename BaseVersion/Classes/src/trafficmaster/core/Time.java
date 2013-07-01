@@ -7,7 +7,11 @@ import java.util.Date;
  * @version 1.0
  * @see Date
  */
-public final class Time {
+public final class Time implements TrafficMasterBean {
+	/**
+	 * The unique object identifier within the class
+	 */
+	private int ID = NULL_ID;
 	/**
 	 * A <code>Date</code> object for method delegation and internal formatting
 	 */
@@ -145,5 +149,13 @@ public final class Time {
 	 */
 	public String toString() {
 		return date.toString();
+	}
+	@Override
+	public int getID() {
+		return ID;
+	}
+	@Override
+	public void setID(int ID) {
+		this.ID = ID;
 	}
 }

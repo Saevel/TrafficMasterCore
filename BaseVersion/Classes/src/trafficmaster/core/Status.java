@@ -8,8 +8,13 @@ package trafficmaster.core;
  * @version 1.0
  * @see JSONSerializable
  * @see JSONFactory
+ * @see TrafficMasterBean
  */
-public class Status implements JSONSerializable {
+public class Status implements JSONSerializable, TrafficMasterBean {
+	/**
+	 * The unique object identifier within the class
+	 */
+	private int ID = NULL_ID;
 	/**
 	 * The name assigned to the status.
 	 */
@@ -71,5 +76,13 @@ public class Status implements JSONSerializable {
 	 */
 	public String getName() {
 		return name;
+	}
+	@Override
+	public int getID() {
+		return ID;
+	}
+	@Override
+	public void setID(int ID) {
+		this.ID = ID;
 	}
 }

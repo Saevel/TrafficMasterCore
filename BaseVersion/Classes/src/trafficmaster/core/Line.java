@@ -11,7 +11,11 @@ import java.util.List;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class Line implements JSONSerializable {
+public class Line implements JSONSerializable, TrafficMasterBean {
+	/**
+	 * The unique object identifier within the class
+	 */
+	private int ID = NULL_ID;
 	/**
 	 * A name of the line.
 	 */
@@ -116,5 +120,14 @@ public class Line implements JSONSerializable {
 		if(locationsPassed != null) {
 			locationsPassed.clear();
 		}
+	}
+	@Override
+	public int getID() {
+		return ID;
+	}
+	@Override
+	public void setID(int ID) {
+		this.ID = ID;
+		
 	}
 }

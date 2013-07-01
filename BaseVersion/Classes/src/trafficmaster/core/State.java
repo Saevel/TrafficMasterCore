@@ -9,7 +9,11 @@ package trafficmaster.core;
  * @see JSONFactory
  * @see Status
  */
-public class State implements JSONSerializable {
+public class State implements JSONSerializable, TrafficMasterBean {
+	/**
+	 * The unique object identifier within the class
+	 */
+	private int ID = NULL_ID;
 	/**
 	 * The acceleration of the vehicle.
 	 */
@@ -135,5 +139,14 @@ public class State implements JSONSerializable {
 	 */
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+	@Override
+	public int getID() {
+		return ID;
+	}
+	@Override
+	public void setID(int ID) {
+		this.ID = ID;
+		
 	}
 }

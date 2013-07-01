@@ -8,7 +8,11 @@ package trafficmaster.core;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class EventGravity implements Comparable<EventGravity>, JSONSerializable {
+public class EventGravity implements Comparable<EventGravity>, JSONSerializable, TrafficMasterBean {
+	/**
+	 * The unique object identifier within the class
+	 */
+	private int ID = NULL_ID;
 	/**
 	 * High gravity.
 	 */
@@ -80,5 +84,15 @@ public class EventGravity implements Comparable<EventGravity>, JSONSerializable 
 		else {
 			return false;
 		}		
+	}
+
+	@Override
+	public int getID() {
+		return ID;
+	}
+
+	@Override
+	public void setID(int ID) {
+		this.ID = ID;
 	}
 }
