@@ -61,10 +61,10 @@ public class MainClass {
 	route.addSubRoute(subRoute);
 	
 	try {
-		JSONObject json = JSONFactory.serialize(route);
-		System.out.println(json);
-		Route newRoute = (Route)JSONFactory.deserialize(json, Route.class);
-		System.out.println(newRoute.getCourses().size());
+		String serialized = JSONFactory.getInstance().serialize(route);
+		System.out.println(serialized);
+		Route newRoute = (Route)JSONFactory.getInstance().deserialize(serialized);
+		System.out.println(newRoute.getSubRoutes());
 	} catch (NotSerializableException e) {
 		System.out.println(e.getMessage());
 	}

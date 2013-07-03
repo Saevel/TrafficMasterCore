@@ -19,26 +19,31 @@ import org.json.JSONObject;
  * @see Field
  * @see Method
  * @see JSONSerializable
+ * @see IserializableFactory
  */
-public class JSONFactory {
+public class JSONFactory implements ISerializableFactory<JSONSerializable> {
 	
-	// FIXME : Implement using the real JSONObject from org.json 
-	// FIXME : Write special methods for handling Collections (to arrays and forth) and Objects
-	// (iterative JSON serialization)
+	private JSONFactory(boolean mock) {
+		;
+	}
 	
-	/**
-	 * Serializes the bean into the <code>JSONObject</code> form.
-	 * @param bean the bean object to serialized
-	 * @return the <code>JSONObject</code> for of the bean object
-	 * @throws NotSerializableException if the bean is corrupted or not able to be serialized.
-	 */
-	public static JSONObject serialize(final JSONSerializable bean) throws NotSerializableException {
+	private static final JSONFactory INSTANCE = new JSONFactory(true);
 	
+	public static JSONFactory getInstance() {
+		return INSTANCE;
+	}
+	
+	@Override
+	public String serialize(final JSONSerializable bean) throws NotSerializableException {
 		Class beanClass = bean.getClass();/*Getting the bean class*/
 		Field[] fields = beanClass.getDeclaredFields(); /*Getting the bean fields*/
-		System.out.println(fields.length);
 		JSONObject json = new JSONObject(); /*Creating a JSONObject*/
-		/*Iterating over all the fields*/
+		/*WARNING: HERE THE CLASS IS PASSED BY ITS LONGER NAME AS IT ENABLES CONFLICT EVASION IN MANY CASES*/
+		try {
+			json.put(ISerializableFactory.classFieldName,beanClass.getName());
+		} catch (JSONException e2) {
+			throw new NotSerializableException("JSONFactory|serialize|cannot create a JSONObject on the basis of the given String");
+		}
 		
 		for(int i=fields.length-1;i>=0;i--) {
 			/*Checking getter for every field*/
@@ -56,33 +61,41 @@ public class JSONFactory {
 			try {
 				
 				Object value = getter.invoke(bean);
-				if(value == null) { /*Fixing JSONs unreasonable rection to nulls*/
+				if(value == null) { /*Fixing JSONs unreasonable reaction to nulls*/
 					value = "null";
 				}
 				
-				json.put(fields[i].getName(), value); /*Iterative field serialization to JSON*/
+				json.put(fields[i].getName(),serialize(value); /*Iterative field serialization to JSON*/
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | JSONException e) {
 				throw new NotSerializableException("JSONFactory|serialize|"+beanClass + "|cannot invoke getter");
 			}
 		}
-		return json;
+		return json.toString();
 	}
-	/**
-	 * Deserializes the bean object from the <code>JSONObject</code>
-	 * @param jsonObject
-	 * @return the <code>Object</code> representing the deserialized bean.
-	 * @throws NotSerializableException if the bean is corrupted or not able to be deserialized.
-	 */
-	public static Object deserialize(JSONObject jsonObject, Class beanClass) throws NotSerializableException {
-		
-		Field[] fields = beanClass.getDeclaredFields(); /*loading the field object for the class*/
+	
+	@Override
+	public JSONSerializable deserialize(String transferred) throws NotSerializableException {
+		/*The class of the received ovject*/
+		Class beanClass;
+		/*The fields of the received object*/
+		Field[] fields;
+		JSONObject jsonObject ;
 		Object beanStub = null;
-		
+		try {
+			/*Transforming to the JSON format*/
+			jsonObject = new JSONObject(transferred);
+			/*Reading the object class from the JSON*/
+			beanClass = Class.forName(jsonObject.getString(ISerializableFactory.classFieldName));
+			fields = beanClass.getDeclaredFields(); /*loading the field object for the class*/
+		} catch(Exception e) {
+			throw new NotSerializableException("JSONFactory|deserialize|cannot get class name from the JSON");
+		}
+
 		try {
 			beanStub = beanClass.newInstance(); /*Creating an empty bean*/
 		} catch (InstantiationException | IllegalAccessException e) {
-			 throw new NotSerializableException("JSONFactory|deserialize|" + beanClass + "|cannot create" +
+			 throw new NotSerializableException("JSONFactory|deserialize|cannot create" +
 					" an object of the fiven class using default constructor!");
 		}
 		
@@ -98,24 +111,28 @@ public class JSONFactory {
 				throw new NotSerializableException("JSONFactory|deserialize|" + beanClass +
 						"|cannot get the setter method object!");
 			}
-			
+			Object deserializedObject = null;
 			try {/*Invoking the setter- setting the field to the JSON-given value*/
-				Object deserializedObject = jsonObject.get(fields[i].getName());
+				deserializedObject = jsonObject.get(fields[i].getName());
 				
 				/*Fixing JSONs abnormal behavior in face of nulls*/
 				if(deserializedObject instanceof String && deserializedObject.equals("null")) {
 					deserializedObject = null;
 				}
-				
-				/*Final , iterative deserialization using setter invocation*/
+				else if(deserializedObject instanceof JSONArray) { /*For collections denoted as JSONArrays, a special treatment*/
+					deserializedObject = deserializeMultiple(deserializedObject.toString());
+				}
+				/*Finally , iterative deserialization using setter invocation*/
 				setter.invoke(beanStub, deserializedObject);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | JSONException e) {
-				System.out.println(e.getMessage());
+				System.out.println("BEAN_STUB CLASS: "+ beanStub.getClass().getSimpleName());
+				System.out.println("DESERIALIZED OBJECT CLASS: " + deserializedObject.getClass().toString());
+				System.out.println("FIELD CLASS: " + fields[i].getType().getSimpleName());
 				throw new NotSerializableException("JSONFactory|deserialize|" + beanClass +
 							"|cannot invoke the setter!");
 			}
 		}
-		return beanStub;
+		return (JSONSerializable)beanStub;
 	}
 	/**
 	 * Checks the name of a setter for a given field.
@@ -138,5 +155,39 @@ public class JSONFactory {
 		String getterName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 		getterName = "get" + getterName;
 		return getterName;
+	}
+
+	@Override
+	public String serializeMultiple(Collection<JSONSerializable> inputs)
+			throws NotSerializableException {
+		Iterator<JSONSerializable> iterator = inputs.iterator();
+		JSONArray array = new JSONArray();
+		
+		while(iterator.hasNext()) {
+			array.put(serialize(iterator.next()));
+		}
+		return array.toString();
+	}
+
+
+	@Override
+	public Collection<JSONSerializable> deserializeMultiple(String transferred)
+			throws NotSerializableException {
+		JSONArray array;
+		try {
+			array = new JSONArray(transferred);
+		} catch (JSONException e) {
+			throw new NotSerializableException("JSONFactory|deserializeMultilpe|a JSONArray couldn;t be properly created");
+		}
+		Collection<JSONSerializable> serializables = new LinkedList<JSONSerializable>();
+		for(int i=0;i<array.length();i++) {
+			try {
+				serializables.add(deserialize(array.get(i).toString()));
+			} catch (JSONException e) {
+				System.out.println(e.getMessage());
+				throw new NotSerializableException("JSONFactory|deserializeMultiple|could not get value from the JSONArray");
+			}
+		}
+		return serializables;
 	}
 }
