@@ -1,4 +1,8 @@
 package trafficmaster.core;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Represents a stop of an arbitrary means of communication with its physical location.
  * 
@@ -32,5 +36,11 @@ public class Stop extends Location {
 	 */
 	public void setStopName(String stopName) {
 		this.stopName = stopName;
+	}
+	
+	@Override
+	protected void deserialize(JSONObject json) throws JSONException {
+		super.deserialize(json);
+		this.stopName = json.getString("stopName");
 	}
 }

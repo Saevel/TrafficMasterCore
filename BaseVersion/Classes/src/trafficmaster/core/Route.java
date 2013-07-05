@@ -1,8 +1,13 @@
 package trafficmaster.core;
+import java.io.NotSerializableException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 /**
  * Constituted from a chain of <code>SubRoutes</code>, makes a full route description.
  * @author Zielony
@@ -13,7 +18,7 @@ import java.util.List;
  * @see JSONFactory
  * @see Time
  */
-public class Route implements IRoute, JSONSerializable {
+public class Route extends JSONSerializable implements IRoute {
 	
 	private List<SubRoute> subRoutes;
 	
@@ -109,5 +114,26 @@ public class Route implements IRoute, JSONSerializable {
 	 */
 	public void setSubRoutes(List<SubRoute> subRoutes) {
 		this.subRoutes = subRoutes;
+	}
+
+	@Override
+	protected void deserialize(JSONObject json) throws JSONException {
+		//KLUDGE used concrete type
+		this.subRoutes = new LinkedList<SubRoute>();
+		
+		JSONArray array = json.getJSONArray("subRoutes");
+		try {
+			if(array!=null) {
+				for(int i=0;i<array.length();i++) {
+					JSONObject jsonObject = array.getJSONObject(i);	
+					subRoutes.add((SubRoute)JSONFactory.getInstance().deserialize(jsonObject.toString(), SubRoute.class));
+				}
+			}
+			
+		}
+		catch(NotSerializableException e) {
+			throw new JSONException("Route|deserialize|could not deserialize subRoutes");
+		}
+		
 	}
 }

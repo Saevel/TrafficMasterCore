@@ -1,5 +1,8 @@
 package trafficmaster.core;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 /**
  * A class that indicates the status of a course at a given <code>Time</code>
@@ -10,11 +13,7 @@ package trafficmaster.core;
  * @see JSONFactory
  * @see TrafficMasterBean
  */
-public class Status implements JSONSerializable, TrafficMasterBean {
-	/**
-	 * The unique object identifier within the class
-	 */
-	private int ID = NULL_ID;
+public class Status extends TrafficMasterBean {
 	/**
 	 * The name assigned to the status.
 	 */
@@ -77,12 +76,10 @@ public class Status implements JSONSerializable, TrafficMasterBean {
 	public String getName() {
 		return name;
 	}
-	@Override
-	public int getID() {
-		return ID;
+	
+	protected void deserialize(JSONObject json) throws JSONException {
+		super.deserialize(json);
+		this.name = json.getString("name");
 	}
-	@Override
-	public void setID(int ID) {
-		this.ID = ID;
-	}
+	
 }

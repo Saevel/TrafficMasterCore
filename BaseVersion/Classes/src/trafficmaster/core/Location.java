@@ -1,4 +1,8 @@
 package trafficmaster.core;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * A bean class whose elements represent the physical location on the map correspoding to an entity
  * from real life.
@@ -8,11 +12,7 @@ package trafficmaster.core;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class Location implements JSONSerializable, TrafficMasterBean {
-	/**
-	 * The unique object identifier within the class
-	 */
-	private int ID = NULL_ID;
+public class Location extends TrafficMasterBean {
 	/**
 	 * The latitude of the location.
 	 */
@@ -90,12 +90,11 @@ public class Location implements JSONSerializable, TrafficMasterBean {
 		this.name = name;
 	}
 	@Override
-	public int getID() {
-		return ID;
-	}
-	@Override
-	public void setID(int ID) {
-		this.ID = ID;
+	protected void deserialize(JSONObject json) throws JSONException {
+			super.deserialize(json);
+			this.latitude = json.getDouble("latitude");
+			this.longitude = json.getDouble("longitude");
+			this.name = json.getString("name");
 		
 	}
 }

@@ -3,9 +3,12 @@ import java.io.NotSerializableException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,106 +37,94 @@ public class JSONFactory implements ISerializableFactory<JSONSerializable> {
 	}
 	
 	@Override
-	public String serialize(final JSONSerializable bean) throws NotSerializableException {
-		Class beanClass = bean.getClass();/*Getting the bean class*/
-		Field[] fields = beanClass.getDeclaredFields(); /*Getting the bean fields*/
-		JSONObject json = new JSONObject(); /*Creating a JSONObject*/
-		/*WARNING: HERE THE CLASS IS PASSED BY ITS LONGER NAME AS IT ENABLES CONFLICT EVASION IN MANY CASES*/
-		try {
-			json.put(ISerializableFactory.classFieldName,beanClass.getName());
-		} catch (JSONException e2) {
-			throw new NotSerializableException("JSONFactory|serialize|cannot create a JSONObject on the basis of the given String");
+	public String serialize(final JSONSerializable bean, Class  beanClass) throws NotSerializableException, JSONException {
+		
+		if(beanClass == Object.class) {
+			return (new JSONObject()).toString();
 		}
 		
-		for(int i=fields.length-1;i>=0;i--) {
-			/*Checking getter for every field*/
-			String getterName = JSONFactory.getGetterName(fields[i]);
-			Method getter = null; 
+		Field[] fields = beanClass.getDeclaredFields();
+		JSONObject json = new JSONObject();
+		Method getter;
+		Object value = null;
+		Class superclass = beanClass.getSuperclass();
+		 
+		JSONObject superJSON = new JSONObject(serialize(bean, superclass));
+		json = merge(json, superJSON);
+		
+		for(int i=0;i<fields.length;i++) {
 			
-			/*Trying to get a Method object referencing the getter for each field*/
-			try {
-					getter = beanClass.getMethod(getterName);
-				} catch (NoSuchMethodException | SecurityException e1) {
-					throw new NotSerializableException("JSONFactory|serialize|" + beanClass + "|cannot get the getter method");
-				}
+			if(Modifier.isStatic(fields[i].getModifiers())) {
+				continue;
+			}
 			
-			/*Trying to put the value in the JSON using the getter invocation*/
 			try {
-				
-				Object value = getter.invoke(bean);
-				if(value == null) { /*Fixing JSONs unreasonable reaction to nulls*/
-					value = "null";
-				}
-				
-				json.put(fields[i].getName(),serialize(value); /*Iterative field serialization to JSON*/
-			} catch (IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | JSONException e) {
-				throw new NotSerializableException("JSONFactory|serialize|"+beanClass + "|cannot invoke getter");
+				getter = beanClass.getDeclaredMethod(getGetterName(fields[i]));
+			}
+			catch(Exception e) {
+				throw new NotSerializableException("JSONFactory|serialize|cannot get the getter method" + " CLASS: " + beanClass + " FIELD: " + fields[i].getName());
+			}
+			try {
+				value = getter.invoke(bean);
+			}
+			catch (Exception e) {
+				throw new NotSerializableException("JSONFactory|serialize|cannotv invoke the getter");
+			}
+			
+			
+			if(fields[i].getType().isPrimitive() || value instanceof String) {
+				json.put(fields[i].getName(),value);
+			}
+			else if(value instanceof JSONSerializable) {
+				JSONObject newJSON  = new JSONObject(serialize((JSONSerializable)value, fields[i].getType()));
+				json.put(fields[i].getName(), newJSON);
+			}
+			else {
+				json.put(fields[i].getName(), (JSONObject)JSONObject.wrap(value));
 			}
 		}
+		
 		return json.toString();
 	}
 	
 	@Override
-	public JSONSerializable deserialize(String transferred) throws NotSerializableException {
-		/*The class of the received ovject*/
-		Class beanClass;
-		/*The fields of the received object*/
-		Field[] fields;
-		JSONObject jsonObject ;
-		Object beanStub = null;
-		try {
-			/*Transforming to the JSON format*/
-			jsonObject = new JSONObject(transferred);
-			/*Reading the object class from the JSON*/
-			beanClass = Class.forName(jsonObject.getString(ISerializableFactory.classFieldName));
-			fields = beanClass.getDeclaredFields(); /*loading the field object for the class*/
-		} catch(Exception e) {
-			throw new NotSerializableException("JSONFactory|deserialize|cannot get class name from the JSON");
-		}
+	public JSONSerializable deserialize(String input, Class<? extends JSONSerializable> objectClass) throws NotSerializableException, JSONException {
 
+		Method deserializer = null;
+		JSONObject json;
+		JSONSerializable newInstance;
+		
+		json = new JSONObject(input);
+		
 		try {
-			beanStub = beanClass.newInstance(); /*Creating an empty bean*/
-		} catch (InstantiationException | IllegalAccessException e) {
-			 throw new NotSerializableException("JSONFactory|deserialize|cannot create" +
-					" an object of the fiven class using default constructor!");
+			
+			deserializer = objectClass.getDeclaredMethod("deserialize", JSONObject.class);
+			deserializer.setAccessible(true);
+		} catch (NoSuchMethodException | SecurityException e) {
+			throw new NotSerializableException("Cannot access the deserializing method from the class");
 		}
 		
-		/*Iterating over Field objects*/
-		for(int i=fields.length-1; i>=0; i--) {
-			
-			String setterName = JSONFactory.getSetterName(fields[i]); /*Checking the field setter name*/
-			Method setter = null;
-			
-			try {/*Getting the setter Method object*/
-				setter = beanClass.getMethod(setterName, fields[i].getType());
-			} catch (NoSuchMethodException | SecurityException e) {
-				throw new NotSerializableException("JSONFactory|deserialize|" + beanClass +
-						"|cannot get the setter method object!");
-			}
-			Object deserializedObject = null;
-			try {/*Invoking the setter- setting the field to the JSON-given value*/
-				deserializedObject = jsonObject.get(fields[i].getName());
-				
-				/*Fixing JSONs abnormal behavior in face of nulls*/
-				if(deserializedObject instanceof String && deserializedObject.equals("null")) {
-					deserializedObject = null;
-				}
-				else if(deserializedObject instanceof JSONArray) { /*For collections denoted as JSONArrays, a special treatment*/
-					deserializedObject = deserializeMultiple(deserializedObject.toString());
-				}
-				/*Finally , iterative deserialization using setter invocation*/
-				setter.invoke(beanStub, deserializedObject);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | JSONException e) {
-				System.out.println("BEAN_STUB CLASS: "+ beanStub.getClass().getSimpleName());
-				System.out.println("DESERIALIZED OBJECT CLASS: " + deserializedObject.getClass().toString());
-				System.out.println("FIELD CLASS: " + fields[i].getType().getSimpleName());
-				throw new NotSerializableException("JSONFactory|deserialize|" + beanClass +
-							"|cannot invoke the setter!");
-			}
+		try {
+			newInstance = (JSONSerializable)objectClass.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new NotSerializableException("Cannot create a new instance of the class. Default constructor missing?");
 		}
-		return (JSONSerializable)beanStub;
+		
+		try {
+			deserializer.invoke(newInstance, json);
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			System.out.println(e.getCause());
+			throw new NotSerializableException("Cannot invoke the deserializer method");
+		}
+		
+		return newInstance;	
 	}
+	
+	/*private JSONObject deserialize(Object object, Class objectClass) {
+		Field[] fields = objectClass.getDeclaredFields();
+	}*/
+	
 	/**
 	 * Checks the name of a setter for a given field.
 	 * @param field the field in question.
@@ -147,7 +138,7 @@ public class JSONFactory implements ISerializableFactory<JSONSerializable> {
 	}
 	/**
 	 * Checks the name of a getter for a given field.
-	 * @param field the field in question.
+	 * @param string the field in question.
 	 * @return the getter name.
 	 */
 	private static String getGetterName(Field field) {
@@ -156,7 +147,7 @@ public class JSONFactory implements ISerializableFactory<JSONSerializable> {
 		getterName = "get" + getterName;
 		return getterName;
 	}
-
+	/*
 	@Override
 	public String serializeMultiple(Collection<JSONSerializable> inputs)
 			throws NotSerializableException {
@@ -189,5 +180,52 @@ public class JSONFactory implements ISerializableFactory<JSONSerializable> {
 			}
 		}
 		return serializables;
+	}*/
+	
+	private JSONObject serializeSuperclass(Object castObject, Class superclass) throws JSONException {
+		/*Checking the superclass of the superclass recursively*/
+		Class superSuperClass = superclass.getSuperclass();
+		// FIXME
+		//System.out.println(superSuperClass.getName());
+		JSONObject json = new JSONObject();
+		/*If there is a superclass, storing the result of its serialization*/
+		if(superSuperClass != null) {
+			System.out.println("PRZED");
+			json = serializeSuperclass(castObject,superSuperClass);
+			/*Casting the serialized object to the superclass*/
+			Object superClassObject  = superclass.cast(castObject);
+			/*Merging the wraps of : the object as current supper class and the results from higher above
+			 * in the class hierarchy - recursively*/
+			json = merge(json, ( (JSONObject)JSONObject.wrap(superClassObject) ) );
+			System.out.println(json.toString());
+		}/*Returning the JSON merged up to current class level*/
+		return json;
 	}
+	
+	private JSONObject merge(JSONObject first, JSONObject second) throws JSONException {
+		JSONObject result = new JSONObject();
+		String[] firstNames = JSONObject.getNames(first);
+		String[] secondNames = JSONObject.getNames(second);
+		if(firstNames!=null) {
+			for(int i=0;i<firstNames.length;i++) {
+				result.put(firstNames[i], first.get(firstNames[i]));
+			}
+		}
+		if(secondNames!=null) {
+			for(int i=0;i<secondNames.length;i++) {
+				result.put(secondNames[i], second.get(secondNames[i]));
+			}
+		}
+		
+		return result;
+	}
+
+	@Override
+	public JSONSerializable deserialize(Location location,
+			Class<? extends JSONSerializable> objectClass)
+			throws NotSerializableException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

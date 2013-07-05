@@ -1,5 +1,8 @@
 package trafficmaster.core;
 import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 /**
  * The class representing the invocation of a simple exponential function of a fomula
  * y = A*exp(K*x) with two paramters: 
@@ -11,7 +14,7 @@ import java.util.List;
  * @see Math
  * @see IFunction
  */
-public class ExponentialFunction implements IFunction<Double,List<Double>,Double>{
+public class ExponentialFunction extends IFunction<Double,List<Double>,Double>{
 
 	/**
 	 * The attentuation coefficient in the exponential formula
@@ -75,5 +78,12 @@ public class ExponentialFunction implements IFunction<Double,List<Double>,Double
 	public void setMultiplier(Double multiplier) {
 		this.multiplier = multiplier;
 	}
+
+	@Override
+	protected void deserialize(JSONObject json) throws JSONException {
+		this.exponent = json.getDouble("exponent");
+		this.multiplier = json.getDouble("multiplier");
+	}
+	
 	
 }

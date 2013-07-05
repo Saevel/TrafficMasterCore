@@ -1,5 +1,9 @@
 package trafficmaster.core;
+import java.io.NotSerializableException;
 import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * An object representing possible criteria to group and apply to choose the route.
@@ -9,7 +13,7 @@ import java.util.List;
  * @see JSONFactory
  * @see IFunction
  */
-public abstract class Criterion<treatedType> implements JSONSerializable {
+public abstract class Criterion<treatedType> extends JSONSerializable {
 	/**
 	 * A score assigned to passes that are considered non-admissible
 	 * */
@@ -91,4 +95,14 @@ public abstract class Criterion<treatedType> implements JSONSerializable {
 			return null;
 		}
 	};
+	
+	@Override
+	protected void deserialize(JSONObject json) throws JSONException {
+		try {
+			this.function = (IFunction<treatedType, ?, Float>) JSONFactory.getInstance().deserialize(json.getJSONObject("function").toString(), IFunction.class);
+		} catch (NotSerializableException e) {
+			throw new JSONException("Criterion|deserialize|cannot deserialize function");
+		}
+		
+	}
 }

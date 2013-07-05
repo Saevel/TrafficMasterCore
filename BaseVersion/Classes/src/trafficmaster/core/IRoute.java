@@ -12,7 +12,7 @@ import java.util.List;
  * @see Time
  * 
  */
-public interface IRoute extends JSONSerializable {
+public interface IRoute {
 	/**
 	 * Fetches a list of all the <code>Courses</code> taken on the Route.
 	 * @return  a list of all the <code>Courses</code> taken on the Route.

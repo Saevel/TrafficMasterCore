@@ -9,11 +9,8 @@ package trafficmaster.core;
  * @see JSONFactory
  * @see Status
  */
-public class State implements JSONSerializable, TrafficMasterBean {
-	/**
-	 * The unique object identifier within the class
-	 */
-	private int ID = NULL_ID;
+public class State extends TrafficMasterBean {
+
 	/**
 	 * The acceleration of the vehicle.
 	 */

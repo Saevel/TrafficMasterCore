@@ -1,4 +1,10 @@
 package trafficmaster.core;
+
+import java.io.NotSerializableException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Represents a single course on a given traffic line.
  * @author Zielony
@@ -8,11 +14,9 @@ package trafficmaster.core;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class Course implements JSONSerializable, TrafficMasterBean {
-	/**
-	 * The unique object identifier within the class
-	 */
-	private int ID = NULL_ID;
+public class Course extends TrafficMasterBean {
+	
+	
 	/**
 	 * The <code>Line</code> this <code>Course</code> is tied to
 	 * */
@@ -92,6 +96,23 @@ public class Course implements JSONSerializable, TrafficMasterBean {
 	@Override
 	public void setID(int ID) {
 		this.ID = ID;
+		
+	}
+	@Override
+	protected void deserialize(JSONObject json) throws JSONException {
+		super.deserialize(json);
+		this.active = json.getBoolean("active");
+		this.courseNumber = json.getInt("courseNumber");
+		try {
+			this.line = (Line) JSONFactory.getInstance().deserialize(json.getJSONObject("line").toString(), Line.class);
+		} catch (NotSerializableException e) {
+			throw new JSONException("Course|deserialize|could not deserialize the line");
+		}
+		try {
+			this.state = (State)JSONFactory.getInstance().deserialize(json.getJSONObject("state").toString(), State.class);
+		} catch (NotSerializableException e) {
+			throw new JSONException("Course|deserialize|could not deserialize the state");
+		}
 		
 	}
 }

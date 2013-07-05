@@ -1,6 +1,10 @@
 package trafficmaster.core;
+import java.io.NotSerializableException;
 import java.util.Date;
 import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 /**
  * Represents a part of a <code>Route</code> traversed only using one <code>Course</code>
  * @author Zielony
@@ -10,7 +14,7 @@ import java.util.List;
  * @see Time
  * 
  */
-public class SubRoute implements JSONSerializable {
+public class SubRoute extends JSONSerializable {
 	/**
 	 * The course which the sub route follows
 	 */
@@ -118,5 +122,19 @@ public class SubRoute implements JSONSerializable {
 	 */
 	public void setLocations(List<Location> locations) {
 		this.locations = locations;
+	}
+	@Override
+	protected void deserialize(JSONObject json) throws JSONException {
+		try {	
+			this.course = (Course)JSONFactory.getInstance().deserialize(json.getJSONObject("course").toString(), Course.class);
+			this.estimatedEndTime = (Time)JSONFactory.getInstance().deserialize(json.getJSONObject("estimatedEndTime").toString(), Time.class);
+			this.estimatedStartTime = (Time)JSONFactory.getInstance().deserialize(json.getJSONObject("estimatedStartTime").toString(), Time.class);
+			this.scheduleEndTime = (Time)JSONFactory.getInstance().deserialize(json.getJSONObject("scheduleEndTime").toString(), Time.class);
+			this.scheduleStartTime = (Time)JSONFactory.getInstance().deserialize(json.getJSONObject("scheduleStartTime").toString(), Time.class);
+		}
+		catch(NotSerializableException e) {
+			throw new JSONException("SubRoute|deserialize|deserialization failed");
+		}
+		
 	}
 }

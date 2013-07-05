@@ -9,7 +9,7 @@ import org.json.JSONObject;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class MeansOfTransport implements JSONSerializable, TrafficMasterBean {
+public class MeansOfTransport extends TrafficMasterBean {
 	/**
 	 * The unique object identifier within the class
 	 */
@@ -69,5 +69,11 @@ public class MeansOfTransport implements JSONSerializable, TrafficMasterBean {
 	public void setID(int ID) {
 		this.ID = ID;
 		
+	}
+	
+	@Override
+	protected void deserialize(JSONObject json) throws JSONException {
+		super.deserialize(json);
+		this.name = json.getString("name");
 	}
 }

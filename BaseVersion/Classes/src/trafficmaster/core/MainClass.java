@@ -3,6 +3,7 @@ import java.io.NotSerializableException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -10,63 +11,22 @@ public class MainClass {
 
 	/**
 	 * @param args
+	 * @throws JSONException 
+	 * @throws NotSerializableException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NotSerializableException, JSONException {
 		// TODO Auto-generated method stub
 		
-	Stop stop = new Stop();
-	stop.setLatitude(100);
-	stop.setLongitude(100);
-	stop.setName("Zag³oby 21 m 14");
-	stop.setStopName("Zag³oby");
-		
-	Line line = new Line();
-	line.setDirection(true);
-	line.setLocationsPassed(new LinkedList<Location>());
-	line.setName("96");
-	line.setMeansOfTransport(MeansOfTransport.BUS);
-		
-	State state = new State();
+		Location location = new Location();
+		location.setID(-10);
+		location.setLatitude(100);
+		location.setLongitude(100);
+		location.setName("TTT");
 	
-	Status status = Status.DRIVING;
-
-	Time time = new Time();
-	time.setHours(13);
-	time.setMinutes(11);
-	time.setSeconds(0);
+		String stringLine = JSONFactory.getInstance().serialize(location, Location.class);
+		System.out.println(stringLine);
 	
-	state.setStatus(status);
-	state.setDelay(time);
-	state.setNearestStop(stop);
-	state.setLocation(stop);
-	state.setAcceleration(0);
-	state.setAverageVelocity(0);
-	state.setCurrentVelocity(0);
-	
-	Course course= new Course();
-	course.setActive(true);
-	course.setLine(line);
-	course.setState(state);
-	
-	SubRoute subRoute = new SubRoute();
-	subRoute.setCourse(course);
-	subRoute.setEstimatedEndTime(time);
-	subRoute.setEstimatedStartTime(time);
-	subRoute.setLocations(new LinkedList<Location>());
-	subRoute.setScheduleEndTime(time);
-	subRoute.setScheduleStartTime(time);
-	
-	Route route = new Route();
-	route.setSubRoutes(new LinkedList<SubRoute>());
-	route.addSubRoute(subRoute);
-	
-	try {
-		String serialized = JSONFactory.getInstance().serialize(route);
-		System.out.println(serialized);
-		Route newRoute = (Route)JSONFactory.getInstance().deserialize(serialized);
-		System.out.println(newRoute.getSubRoutes());
-	} catch (NotSerializableException e) {
-		System.out.println(e.getMessage());
-	}
-	}
+		Location mLocation = (Location)JSONFactory.getInstance().deserialize(stringLine, Location.class);
+		System.out.println(mLocation.getLatitude());
+  }
 }

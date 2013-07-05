@@ -1,6 +1,11 @@
 package trafficmaster.core;
+import java.io.NotSerializableException;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Represents a line in the traffic system.
@@ -11,11 +16,7 @@ import java.util.List;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class Line implements JSONSerializable, TrafficMasterBean {
-	/**
-	 * The unique object identifier within the class
-	 */
-	private int ID = NULL_ID;
+public class Line extends TrafficMasterBean {
 	/**
 	 * A name of the line.
 	 */
@@ -121,13 +122,32 @@ public class Line implements JSONSerializable, TrafficMasterBean {
 			locationsPassed.clear();
 		}
 	}
+	
 	@Override
-	public int getID() {
-		return ID;
-	}
-	@Override
-	public void setID(int ID) {
-		this.ID = ID;
+	protected void deserialize(JSONObject json) throws JSONException {
+		// FIXME ID deserialization must be done here
+		
+		//super.deserialize(json);
+		this.direction = json.getBoolean("direction");
+		// KLUDGE reference to a concrete type
+		this.locationsPassed = new LinkedList<Location>();
+		JSONArray locationsArray = json.getJSONArray("locationsPassed");
+		if(locationsPassed != null) {
+			for(int i=0;i<locationsArray.length();i++) {
+				try {
+					Location location = (Location)JSONFactory.getInstance().deserialize(locationsArray.getJSONObject(i).toString(), Location.class);
+					locationsPassed.add(location);
+				} catch (NotSerializableException e) {
+					throw new JSONException("Line|deserialize|could not deserialize a member location");
+				}
+			}	
+		}
+		try {
+			this.meansOfTransport = (MeansOfTransport)JSONFactory.getInstance().deserialize(json.getJSONObject("meansOfTransport").toString(), MeansOfTransport.class);
+		} catch (NotSerializableException e) {
+			throw new JSONException("Line|deserialize|could not deserialize the means of transport");
+		}
+		this.name = json.getString("name");
 		
 	}
 }

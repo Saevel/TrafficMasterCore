@@ -1,17 +1,16 @@
 package trafficmaster.core;
 import java.util.Date;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Represents time or time interval , with comparison , sorting and difference determination possibilities.
  * @author Zielony
  * @version 1.0
  * @see Date
  */
-public final class Time implements TrafficMasterBean {
-	/**
-	 * The unique object identifier within the class
-	 */
-	private int ID = NULL_ID;
+public final class Time extends TrafficMasterBean {
 	/**
 	 * A <code>Date</code> object for method delegation and internal formatting
 	 */
@@ -123,19 +122,19 @@ public final class Time implements TrafficMasterBean {
 		
 		int factor=1;
 		
-		if(date.before(time.date)){
+		if(date.before(time.date)){/*If the dates are inverse - pseudo-switching them back.*/
 			factor = -1;
 		}
-		
+		/*Squre subtraction*/
 		Time result = new Time();
 		result.setHours((this.getHours() - time.getHours())*factor);
 		result.setMinutes((this.getMinutes()-time.getMinutes())*factor);
 		result.setSeconds((this.getSeconds()-time.getSeconds())*factor);
-		
+		/*Second correction*/
 		if(result.getSeconds()<0) {
 			result.setSeconds(result.getSeconds() + SECONDS_PER_MINUTE);
 			result.setMinutes(result.getMinutes()-1);
-		}
+		}/*Minute correction*/
 		if(result.getMinutes()<0) {
 			result.setMinutes(result.getMinutes() + MINUTES_PER_HOUR);
 			result.setHours(result.getHours()-1);
@@ -150,12 +149,25 @@ public final class Time implements TrafficMasterBean {
 	public String toString() {
 		return date.toString();
 	}
-	@Override
-	public int getID() {
-		return ID;
+	
+	/**
+	 * Gets: the <code>Date</code> object used in the class.
+	 * @return the <code>Date</code> object used in the class.
+	 */
+	public Date getDate() {
+		return date;
 	}
-	@Override
-	public void setID(int ID) {
-		this.ID = ID;
+	/**
+	 * Sets : the <code>Date</code> object used in the class.
+	 * @param date the <code>Date</code> object used in the class.
+	 */
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	
+	@Override 
+	protected void deserialize(JSONObject json) throws JSONException {
+		super.deserialize(json);
+		this.date = new Date(json.getJSONObject("date").toString());
 	}
 }

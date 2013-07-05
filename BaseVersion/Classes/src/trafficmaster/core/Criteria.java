@@ -1,7 +1,12 @@
 package trafficmaster.core;
+import java.io.NotSerializableException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Aggregates a number of <code>Criterion</code> objects to be used in cooperation
@@ -10,7 +15,7 @@ import java.util.List;
  * @see Criterion
  * @see ICriteria
  */
-public class Criteria implements ICriteria {
+public class Criteria extends ICriteria {
 	/**
 	 * All the criteria used in the gauging process.
 	 */
@@ -60,5 +65,22 @@ public class Criteria implements ICriteria {
 	
 	public void setCriteria(List<Criterion> criteria) {
 		this.criteria = criteria;
+	}
+
+	@Override
+	protected void deserialize(JSONObject json) throws JSONException {
+		
+		JSONArray array = json.getJSONArray("criteria");
+		try {
+			if(array!=null) {
+				for(int i=0;i<array.length();i++) {
+					Criterion criterion = (Criterion) JSONFactory.getInstance().deserialize(array.getJSONObject(i).toString(), Criterion.class);
+					criteria.add(criterion);
+				}
+			}
+		}
+		catch(NotSerializableException e) {
+			throw new JSONException("Criteria|deserialize|cannot deserialize some of the criteria");
+		}
 	}
 }

@@ -1,4 +1,8 @@
 package trafficmaster.core;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Typesafe enumeration class representing the gravity of a certain <code>Event</code>.
  * @author Zielony
@@ -8,11 +12,7 @@ package trafficmaster.core;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class EventGravity implements Comparable<EventGravity>, JSONSerializable, TrafficMasterBean {
-	/**
-	 * The unique object identifier within the class
-	 */
-	private int ID = NULL_ID;
+public class EventGravity extends TrafficMasterBean implements Comparable<EventGravity> {
 	/**
 	 * High gravity.
 	 */
@@ -87,12 +87,9 @@ public class EventGravity implements Comparable<EventGravity>, JSONSerializable,
 	}
 
 	@Override
-	public int getID() {
-		return ID;
-	}
-
-	@Override
-	public void setID(int ID) {
-		this.ID = ID;
+	protected void deserialize(JSONObject json) throws JSONException {
+		super.deserialize(json);
+		this.gravity = json.getInt("gravity");
+		this.name = json.getString("name");
 	}
 }

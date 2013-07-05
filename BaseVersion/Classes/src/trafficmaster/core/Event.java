@@ -1,5 +1,10 @@
 package trafficmaster.core;
+import java.io.NotSerializableException;
 import java.util.Collection;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 /**
  * An event that may occur in city traffic.
  * 
@@ -11,12 +16,7 @@ import java.util.Collection;
  * @see JSONSerializable
  * @see JSONFactory
  */
-public class Event implements JSONSerializable, TrafficMasterBean {
-	
-	/**
-	 * The unique object identifier within the class
-	 */
-	private int ID = NULL_ID;
+public class Event extends TrafficMasterBean {
 	
 	/**
 	 * The name of the event.
@@ -150,11 +150,25 @@ public class Event implements JSONSerializable, TrafficMasterBean {
 		this.affected = affected;
 	}
 	@Override
-	public int getID() {
-		return ID;
-	}
-	@Override
-	public void setID(int ID) {
-		this.ID = ID;
+	protected void deserialize(JSONObject json) throws JSONException {
+		super.deserialize(json);
+		this.shortDescription = json.getString("shortDescription");
+		this.longDescription = json.getString(longDescription);
+		this.name = json.getString("name");
+		
+		try {
+			this.gravity = (EventGravity) JSONFactory.getInstance().deserialize(json.getJSONObject("graivyt").toString(), EventGravity.class);
+			this.type = (EventType) JSONFactory.getInstance().deserialize(json.getJSONObject("type").toString(), EventType.class);
+			
+			JSONArray array = json.getJSONArray("affected");
+			if(array!=null) {
+				for(int i=0;i<array.length();i++) {
+					Location location = (Location)JSONFactory.getInstance().deserialize(array.getJSONObject(i).toString(), Location.class);
+				}
+			}
+		}
+		catch(Exception e) {
+			throw new JSONException("Event|deserialize|Could not deserialize object fields");
+		}
 	}
 }
