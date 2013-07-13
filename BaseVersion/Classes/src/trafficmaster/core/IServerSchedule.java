@@ -10,7 +10,7 @@ import java.util.Set;
  * @see Stop
  * @see Line
  */
-public interface ISchedule {
+public interface IServerSchedule {
 	/**
 	 * Returns all the <code>Stops</code> a given <code>Line</code> passes through.
 	 * @param line the <code>Line</code> for which the <code>Stops</code> are fetched.

@@ -88,7 +88,7 @@ public class JSONFactory implements ISerializableFactory<JSONSerializable> {
 	}
 	
 	@Override
-	public JSONSerializable deserialize(String input, Class<? extends JSONSerializable> objectClass) throws NotSerializableException, JSONException {
+	public JSONSerializable deserialize(String input, Class/*<? extends JSONSerializable>*/ objectClass) throws NotSerializableException, JSONException {
 
 		Method deserializer = null;
 		JSONObject json;
@@ -102,6 +102,7 @@ public class JSONFactory implements ISerializableFactory<JSONSerializable> {
 			deserializer.setAccessible(true);
 		} catch (NoSuchMethodException | SecurityException e) {
 			throw new NotSerializableException("Cannot access the deserializing method from the class");
+			
 		}
 		
 		try {

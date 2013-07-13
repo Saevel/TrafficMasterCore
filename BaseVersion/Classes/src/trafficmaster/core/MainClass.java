@@ -18,7 +18,7 @@ public class MainClass {
 		// TODO Auto-generated method stub
 		
 		Location location = new Location();
-		location.setID(-10);
+		location.setID(-1);
 		location.setLatitude(100);
 		location.setLongitude(100);
 		location.setName("TTT");
@@ -27,6 +27,6 @@ public class MainClass {
 		System.out.println(stringLine);
 	
 		Location mLocation = (Location)JSONFactory.getInstance().deserialize(stringLine, Location.class);
-		System.out.println(mLocation.getLatitude());
+		System.out.println(JSONFactory.getInstance().serialize(mLocation, Location.class));
   }
 }
