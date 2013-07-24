@@ -20,19 +20,19 @@ public abstract class TrafficMasterBean extends JSONSerializable implements Seri
 	/**
 	 * The ID of the bean - for database interaction mainly.
 	 */
-	protected int ID;
+	protected int ID = NULL_ID;
 	/**
 	 * Gets: the ID of the bean.
 	 * @return the ID of the bean.
 	 */
-	int getID(){
+	public int getID(){
 		return this.ID;
 	}
 	/**
 	 * Sets: the ID of the bean.
 	 * @param ID the ID of the bean.
 	 */
-	void setID(int ID){
+	public void setID(int ID){
 		this.ID = ID;
 	}
 	/**A special value used to indicate that the ID has not yet been set.*/

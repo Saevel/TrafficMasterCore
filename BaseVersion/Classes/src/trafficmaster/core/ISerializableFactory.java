@@ -19,11 +19,8 @@ import org.json.JSONException;
  * bound to each implementation. NOTE: it is derived from <code>Serializable</code> so that the factory may
  * also be imeplemented to work with native Java serialization / deserialization.
  */
-public interface ISerializableFactory<InputType extends Serializable> {
-	/**
-	 * A fixed name that is bound to class definition for RTTI invocation on deserialization. 
-	 */
-	static final String classFieldName = "class";
+public interface ISerializableFactory {
+	
 	/**
 	 * Serialized the <code>input</code> into a <code>String</code>.
 	 * @param input the data to be serialized
@@ -31,7 +28,7 @@ public interface ISerializableFactory<InputType extends Serializable> {
 	 * @throws NotSerializableException if serialization errors occurred.
 	 * @throws JSONException 
 	 */
-	String serialize(InputType input, Class beanClass) throws NotSerializableException, JSONException;
+	String serialize(Object input) throws NotSerializableException, JSONException;
 	/**
 	 * 
 	 * @param input
@@ -40,9 +37,5 @@ public interface ISerializableFactory<InputType extends Serializable> {
 	 * @throws NotSerializableException
 	 * @throws JSONException 
 	 */
-	InputType deserialize(String input, Class<? extends InputType> objectClass) throws NotSerializableException, JSONException;
-	JSONSerializable deserialize(Location location,
-			Class<? extends JSONSerializable> objectClass)
-			throws NotSerializableException;
-	
+	Object deserialize(String input) throws NotSerializableException, JSONException;
 }

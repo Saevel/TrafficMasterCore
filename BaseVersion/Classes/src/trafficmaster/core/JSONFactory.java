@@ -24,7 +24,7 @@ import org.json.JSONObject;
  * @see JSONSerializable
  * @see IserializableFactory
  */
-public class JSONFactory implements ISerializableFactory<JSONSerializable> {
+public class JSONFactory implements ISerializableFactory {
 	
 	private JSONFactory(boolean mock) {
 		;
@@ -36,7 +36,6 @@ public class JSONFactory implements ISerializableFactory<JSONSerializable> {
 		return INSTANCE;
 	}
 	
-	@Override
 	public String serialize(final JSONSerializable bean, Class  beanClass) throws NotSerializableException, JSONException {
 		
 		if(beanClass == Object.class) {
@@ -87,7 +86,6 @@ public class JSONFactory implements ISerializableFactory<JSONSerializable> {
 		return json.toString();
 	}
 	
-	@Override
 	public JSONSerializable deserialize(String input, Class/*<? extends JSONSerializable>*/ objectClass) throws NotSerializableException, JSONException {
 
 		Method deserializer = null;
@@ -221,10 +219,23 @@ public class JSONFactory implements ISerializableFactory<JSONSerializable> {
 		return result;
 	}
 
-	@Override
 	public JSONSerializable deserialize(Location location,
 			Class<? extends JSONSerializable> objectClass)
 			throws NotSerializableException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String serialize(Object input) throws NotSerializableException,
+			JSONException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object deserialize(String input) throws NotSerializableException,
+			JSONException {
 		// TODO Auto-generated method stub
 		return null;
 	}
